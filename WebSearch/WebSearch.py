@@ -1,21 +1,3 @@
-# from googlesearch import search
-# from bs4 import BeautifulSoup
-# import requests
-
-
-# query = input("Enter some query: ")
-
-# print(list(search(query)))
-
-# for link in list(search(query)):
-#     webpage = requests.get("https://www.timeanddate.com/astronomy/rainbow.html").content
-#     soup = BeautifulSoup(webpage)
-#     des = soup.find("meta", property = "og:description")
-#     print(des['content'] if des else "No description")
-#     print()
-#     print("----------------------------------------------")
-#     print()
-
 import requests
 import urllib
 import pandas as pd
@@ -33,7 +15,6 @@ def get_source(url):
 
 
 def scrape_google(query):
-
     query = urllib.parse.quote_plus(query)
     response = get_source("https://www.google.co.uk/search?q=" + query)
 
@@ -51,8 +32,6 @@ def scrape_google(query):
             links.remove(url)
 
     return links
-
-scrape_google("data science blogs")
 
 def get_results(query):
     
@@ -88,9 +67,6 @@ def google_search(query):
     response = get_results(query)
     return parse_results(response)
 
-query = input("Enter query: ")
-
-results = google_search(query)
-
-for result in results:
-    print(result['text'].encode('cp850', errors='replace').decode('cp850'))
+def find_results(query):
+    results = google_search(query)
+    return results
