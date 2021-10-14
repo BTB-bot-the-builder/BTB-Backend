@@ -62,6 +62,8 @@ public class LoginController {
 
         String jwt = jwtUtil.generateToken(userDetails);
 
+        System.out.println(jwtUtil.extractUsername(jwt));
+
         LoginResponse loginResponse = LoginResponse.builder()
                 .msg("Logged in successfully")
                 .status(200)

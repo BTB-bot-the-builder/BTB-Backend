@@ -11,4 +11,4 @@ spring:
     hibernate:
       ddl-auto: update
   application:
-    name: gateway
+    name: authentication
