@@ -1,6 +1,7 @@
 import tensorflow_hub as hub 
 import numpy as np 
 import time
+import random
 from functools import lru_cache
 
 embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
@@ -11,6 +12,11 @@ def getFile(path):
     if path in d:
         return d[path]
     else:
+        if len(d)==64:
+            keys = list(d.keys())
+            for k in keys:
+                d.pop(k)
+
         f = open(path, 'r')
         d[path] = f.read()
         return d[path]
@@ -19,6 +25,10 @@ def getNumpyFile(path):
     if path in nd:
         return nd[path]
     else:
+        if len(nd)==64:
+            keys = list(nd.keys())
+            for k in keys:
+                nd.pop(k)
         f = np.load(path)
         nd[path] = f
         return f
