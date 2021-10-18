@@ -3,6 +3,8 @@ import numpy as np
 import time
 import random
 from functools import lru_cache
+import tensorflow as tf
+import json 
 
 embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 d = dict()
@@ -17,8 +19,9 @@ def getFile(path):
             for k in keys:
                 d.pop(k)
 
-        f = open(path, 'r')
-        d[path] = f.read()
+        f = open(path)
+        data = json.load(f)
+        d[path] = data
         return d[path]
 
 def getNumpyFile(path):
@@ -34,23 +37,25 @@ def getNumpyFile(path):
         return f
 
 def saveEmbeddingsNumpy(path, name):
-    f = getFile(path)
-    qa = f.split('\n')
+    data = getFile(path)
+
     inp = []
     targ = []
-    for x in qa:
-        inp.append(x.split('\t')[0])
-        targ.append(x.split('\t')[1])
+
+    for d in data:
+        inp.append(d['question'])
+        targ.append(d['answer'])
     
-    embeddings = np.array(embed(inp))
-    np.save("D:\Minor-Project\\resources\\" + name + ".npy", embeddings)
+    with tf.device('/CPU:0'):
+        embeddings = np.array(embed(inp))
+        np.save("D:\Minor-Project\\resources\\" + name + ".npy", embeddings)
 
 
 def findAnswer(question, path, np_path):
-    sent_embd = np.array(embed([question])[0])
+    with tf.device('/CPU:0'):
+        sent_embd = np.array(embed([question])[0])
     embeddings = getNumpyFile(np_path)
-    f = getFile(path)
-    data = f.split('\n')
+    data = getFile(path)
 
     ind = -1
     ans = 0
@@ -58,9 +63,9 @@ def findAnswer(question, path, np_path):
     inp = []
     targ = []
 
-    for x in data:
-        inp.append(x.split('\t')[0])
-        targ.append(x.split('\t')[1])
+    for d in data:
+        inp.append(d['question'])
+        targ.append(d['answer'])
 
     for i in range(len(inp)):
         A = sent_embd
@@ -70,15 +75,27 @@ def findAnswer(question, path, np_path):
             ind = i
             ans = similarity
 
-    print("Dataset Sentence:", inp[ind])
     if(ind!=-1):
-        print("Reply:", targ[ind])
+        return targ[ind]
     else:
-        print("Reply: Sorry I didn't get that.")
+        return "Sorry I didn't get that."
         
 
-saveEmbeddingsNumpy('D:\Minor-Project\\resources\dialogs.txt', 'diaglogs_numpy')
+def getAnswer(question, project_name):
+    path = "D:\Minor-Project\\resources\\" + project_name + ".json"
+    np_path = "D:\Minor-Project\\resources\\" + project_name + ".npy"
+    answer = findAnswer(question, path, np_path)
+    return answer
 
-while True:
-    ques = input("Enter question: ")
-    findAnswer(ques, 'D:\Minor-Project\\resources\dialogs.txt', 'D:\Minor-Project\\resources\diaglogs_numpy.npy')
+def findEmbedding(project_name):
+    name = project_name
+    path = "D:\Minor-Project\\resources\\" + project_name + ".json"
+    saveEmbeddingsNumpy(path, name)
+
+# saveEmbeddingsNumpy('D:\Minor-Project\\resources\dialogs.txt', 'diaglogs_numpy')
+
+# while True:
+#     ques = input("Enter question: ")
+#     findAnswer(ques, 'D:\Minor-Project\\resources\dialogs.txt', 'D:\Minor-Project\\resources\diaglogs_numpy.npy')
+
+# findEmbedding("user-1-project-1")
