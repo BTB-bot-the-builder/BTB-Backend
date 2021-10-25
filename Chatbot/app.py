@@ -3,9 +3,9 @@ from flask import Flask, request, jsonify
 import py_eureka_client.eureka_client as eureka_client
 
 rest_port = 8084
-# eureka_client.init(eureka_server="http://localhost:8761/eureka",
-#                    app_name="chatbot",
-#                    instance_port=rest_port)
+eureka_client.init(eureka_server="http://localhost:8761/eureka",
+                   app_name="chatbot",
+                   instance_port=rest_port)
 
 app = Flask(__name__)
 

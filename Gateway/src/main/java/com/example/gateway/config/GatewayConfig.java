@@ -18,6 +18,7 @@ public class GatewayConfig {
         return builder.routes()
                 .route("login", r->r.path("/login").filters(f->f.filter(filter)).uri("lb://authentication"))
                 .route("user", r->r.path("/user/**").filters(f->f.filter(filter)).uri("lb://user-project"))
+                .route("redirect-service", r->r.path("/redirect").filters(f->f.filter(filter)).uri("lb://redirect-service"))
                 .route("websearch", r->r.path("/websearch").filters(f->f.filter(filter)).uri("lb://web-search")).build();
 
     }
