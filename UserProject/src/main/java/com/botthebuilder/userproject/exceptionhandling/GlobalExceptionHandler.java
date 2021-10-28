@@ -3,6 +3,7 @@ package com.botthebuilder.userproject.exceptionhandling;
 import com.botthebuilder.userproject.responses.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -37,13 +38,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {InvalidProjectException.class})
     public ResponseEntity<Response> invalidProject(Exception e){
-        Response ex = new Response("Invalid User", "400" );
+        Response ex = new Response("Invalid Project", "400" );
         return new ResponseEntity<Response>(ex , HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {InvalidActionException.class})
     public ResponseEntity<Response> invalidAction(Exception e){
-        Response ex = new Response("Invalid User", "400" );
+        Response ex = new Response("Invalid Project", "400" );
         return new ResponseEntity<Response>(ex , HttpStatus.BAD_REQUEST);
     }
 
@@ -59,10 +60,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<Response>(ex , HttpStatus.BAD_REQUEST);
     }
 
+    // need to be changed to internal server error
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Response> generalException(Exception e){
-        Response ex = new Response("Internal Server Error", "500" );
+        Response ex = new Response(e.toString(), "500" );
         return new ResponseEntity<Response>(ex , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<Response> invalidRequest(MethodArgumentNotValidException e){
+        Response ex = new Response("Invalid request", "400" );
+        return new ResponseEntity<Response>(ex , HttpStatus.BAD_REQUEST);
     }
 
 

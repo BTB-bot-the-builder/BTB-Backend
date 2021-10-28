@@ -49,6 +49,10 @@ public class Project {
 
     private Integer totalRequests = 0;
 
+    private Integer totalRatings = 0;
+
+    private Integer sumRatings = 0;
+
     @ManyToOne(
             optional = false
     )

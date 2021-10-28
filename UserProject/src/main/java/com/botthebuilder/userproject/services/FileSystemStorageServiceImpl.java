@@ -48,8 +48,10 @@ public class FileSystemStorageServiceImpl implements FileSystemStorageService{
     public void validateFile(MultipartFile file) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = file.getBytes().toString();
+        String json = new String(file.getBytes());
+        System.out.println(json);
         List<QuestionAnswerSet> questionAnswerSetList = mapper.readValue(json, new TypeReference<List<QuestionAnswerSet>>(){});
+        System.out.println(questionAnswerSetList.toString());
     }
 
     @Override

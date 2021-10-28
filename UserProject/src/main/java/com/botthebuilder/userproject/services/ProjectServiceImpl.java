@@ -37,7 +37,7 @@ public class ProjectServiceImpl implements ProjectService{
 
 
         p.setDataFilePath(filePath);
-        p.setState(2);
+        p.setState(Math.max(3, p.getState()));
 
         projectRepository.save(p);
 
@@ -50,7 +50,7 @@ public class ProjectServiceImpl implements ProjectService{
         p.setBotName(botName);
         p.setDescription(description);
         p.setAvatarUrl(avatarUrl);
-        p.setState(1);
+        p.setState(Math.max(2, p.getState()));
 
         projectRepository.save(p);
     }

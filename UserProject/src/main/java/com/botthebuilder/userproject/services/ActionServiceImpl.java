@@ -3,6 +3,7 @@ package com.botthebuilder.userproject.services;
 import com.botthebuilder.userproject.entities.Action;
 import com.botthebuilder.userproject.entities.Project;
 import com.botthebuilder.userproject.repositories.ActionRepository;
+import com.botthebuilder.userproject.repositories.ProjectRepository;
 import com.botthebuilder.userproject.requests.ActionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class ActionServiceImpl implements ActionService{
     @Autowired
     ActionRepository actionRepository;
 
+    @Autowired
+    ProjectRepository projectRepository;
+
     public void loadActions(List<ActionRequest> actionRequestList, Project project){
         for(int i=0;i<actionRequestList.size();i++){
             Action action = Action.builder()
@@ -26,6 +30,9 @@ public class ActionServiceImpl implements ActionService{
 
             actionRepository.save(action);
         }
+
+        project.setState(Math.max(4, project.getState()));
+        projectRepository.save(project);
     }
 
     @Override

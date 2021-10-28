@@ -39,7 +39,7 @@ public class ProjectController {
     @PostMapping("{userId}/project")
     public ResponseEntity<CreateProjectResponse> createProject(@RequestBody @Valid CreateProjectRequest request, @PathVariable Long userId) throws UserNotFoundException , Exception {
 
-        Optional<User> user = userService.findById(request.getUserId());
+        Optional<User> user = userService.findById(userId);
         User u = null;
 
         if(user.isPresent()){

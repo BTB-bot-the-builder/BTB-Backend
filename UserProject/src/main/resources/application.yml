@@ -18,7 +18,9 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 10MB
       max-request-size: 20MB
+  application:
+    name: user-project
 
 file:
   upload:
-    location: d:/Minor-Project/uploads
+    location: d:/Minor-Project/resources
