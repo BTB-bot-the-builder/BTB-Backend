@@ -33,17 +33,8 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public void addDataFile(Long id, String filePath) throws ProjectNotFoundException {
-        Optional<Project> project = projectRepository.findById(id);
+    public void addDataFile(Project p, String filePath){
 
-        Project p = null;
-
-        if(project.isPresent()){
-            p = project.get();
-        }
-        else{
-            throw new ProjectNotFoundException();
-        }
 
         p.setDataFilePath(filePath);
         p.setState(2);
@@ -53,7 +44,7 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public void configureProject(Project p, String botName, String description, String avatarUrl) throws ProjectNotFoundException {
+    public void configureProject(Project p, String botName, String description, String avatarUrl) {
 
 
         p.setBotName(botName);
@@ -64,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService{
         projectRepository.save(p);
     }
 
-    public List<ProjectWithoutUser> getAllProjects(User user){
+    public List<ProjectWithoutUser> getAllProjects(User user) {
         List<ProjectWithoutUser> list = new ArrayList<>();
         for(int i=0;i<user.getProjectList().size();i++){
             ProjectWithoutUser projectWithoutUser = new ProjectWithoutUser(user.getProjectList().get(i));

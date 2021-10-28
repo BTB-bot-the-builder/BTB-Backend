@@ -16,12 +16,12 @@ public interface ProjectService {
 
     public void saveToDb(Project project);
 
-    public Optional<Project> getById(Long id);
+    public Optional<Project> getById(Long id) ;
 
-    public void addDataFile(Long id, String fileName) throws ProjectNotFoundException;
+    public void addDataFile(Project p, String fileName) ;
 
-    public void configureProject(Project project, String botName, String description, String avatarUrl) throws ProjectNotFoundException;
+    public void configureProject(Project project, String botName, String description, String avatarUrl) ;
 
-    public List<ProjectWithoutUser> getAllProjects(User user);
+    public List<ProjectWithoutUser> getAllProjects(User user) ;
 
 }

@@ -29,7 +29,7 @@ public class ActionServiceImpl implements ActionService{
     }
 
     @Override
-    public void loadSingleAction(String actionName, String actionUrl, Project project) {
+    public void loadSingleAction(String actionName, String actionUrl, Project project)  {
         Action action = Action.builder()
                 .actionName(actionName)
                 .actionDetail(actionUrl)
