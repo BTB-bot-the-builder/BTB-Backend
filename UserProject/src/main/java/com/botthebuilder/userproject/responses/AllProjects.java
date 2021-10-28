@@ -16,6 +16,6 @@ public class AllProjects {
 
     private String msg;
     private String status;
-    List<Project> projects;
+    List<ProjectWithoutUser> projects;
 
 }

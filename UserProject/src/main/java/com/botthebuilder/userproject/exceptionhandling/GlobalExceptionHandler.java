@@ -8,12 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-//
-//    @ExceptionHandler
-//    public ResponseEntity<ExceptionResponse> handleExceptions(Exception e){
-//        ExceptionResponse ex = new ExceptionResponse(e.getMessage(), "500" );
-//        return new ResponseEntity<ExceptionResponse>(ex , HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+
+    // needs update
 
     @ExceptionHandler(value = {UserNotFoundException.class})
     public ResponseEntity<Response> invalidUser(Exception e){

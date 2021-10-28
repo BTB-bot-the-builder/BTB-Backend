@@ -45,6 +45,10 @@ public class Project {
 
     private Integer state;
 
+    private String date;
+
+    private Integer totalRequests = 0;
+
     @ManyToOne(
             optional = false
     )

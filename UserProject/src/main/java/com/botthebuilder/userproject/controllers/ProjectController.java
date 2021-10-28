@@ -3,11 +3,14 @@ package com.botthebuilder.userproject.controllers;
 import com.botthebuilder.userproject.entities.Project;
 import com.botthebuilder.userproject.entities.User;
 import com.botthebuilder.userproject.exceptionhandling.FileStorageException;
+import com.botthebuilder.userproject.exceptionhandling.InvalidProjectException;
 import com.botthebuilder.userproject.exceptionhandling.ProjectNotFoundException;
 import com.botthebuilder.userproject.exceptionhandling.UserNotFoundException;
 import com.botthebuilder.userproject.requests.ConfigureProjectRequest;
 import com.botthebuilder.userproject.requests.CreateProjectRequest;
+import com.botthebuilder.userproject.responses.AllProjects;
 import com.botthebuilder.userproject.responses.CreateProjectResponse;
+import com.botthebuilder.userproject.responses.ProjectWithoutUser;
 import com.botthebuilder.userproject.responses.Response;
 import com.botthebuilder.userproject.services.FileSystemStorageService;
 import com.botthebuilder.userproject.services.ProjectService;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/user")
 public class ProjectController {
 
 
@@ -35,7 +39,7 @@ public class ProjectController {
     @Autowired
     FileSystemStorageService fileSystemStorage;
 
-    @PostMapping("user/{userId}/project")
+    @PostMapping("{userId}/project")
     public ResponseEntity<CreateProjectResponse> createProject(@RequestBody @Valid CreateProjectRequest request, @PathVariable Long userId) throws Exception {
 
         Optional<User> user = userService.findById(request.getUserId());
@@ -51,7 +55,7 @@ public class ProjectController {
         Project project = Project.builder()
                 .projectName(request.getProjectName())
                 .user(u)
-                .state(0)
+                .state(1)
                 .build();
 
         projectService.saveToDb(project);
@@ -66,10 +70,24 @@ public class ProjectController {
         return new ResponseEntity<CreateProjectResponse>(response, HttpStatus.OK);
     }
 
-    @PostMapping("user/{userId}/projects/{projectId}/configure")
-    public ResponseEntity<Response> configure(@PathVariable Long projectId, @PathVariable Long userId, @RequestBody @Valid ConfigureProjectRequest request) throws Exception {
+    @PostMapping("{userId}/projects/{projectId}/configure")
+    public ResponseEntity<Response> configure(@PathVariable Long projectId, @PathVariable Long userId, @RequestBody @Valid ConfigureProjectRequest request) throws ProjectNotFoundException, InvalidProjectException {
 
-        projectService.configureProject(projectId, request.getBotName(), request.getDescription(), request.getAvatarUrl());
+        Optional<Project> optionalProject = projectService.getById(projectId);
+
+        Project project = null;
+        if(optionalProject.isPresent()){
+            project = optionalProject.get();
+        }
+        else{
+            throw new ProjectNotFoundException();
+        }
+
+        if(project.getUser().getUserId()!=userId){
+            throw new InvalidProjectException();
+        }
+
+        projectService.configureProject(project, request.getBotName(), request.getDescription(), request.getAvatarUrl());
 
         Response response = Response.builder()
                 .msg("Project configured successfully")
@@ -78,8 +96,23 @@ public class ProjectController {
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
-    @PostMapping("user/{userId}/projects/{projectId}/data")
-    public ResponseEntity<Response> addDataFile(@PathVariable Long projectId, @PathVariable Long userId, @RequestParam("file") MultipartFile file ) throws ProjectNotFoundException, FileStorageException {
+    @PostMapping("{userId}/projects/{projectId}/data")
+    public ResponseEntity<Response> addDataFile(@PathVariable Long projectId, @PathVariable Long userId, @RequestParam("file") MultipartFile file ) throws ProjectNotFoundException, FileStorageException, InvalidProjectException {
+
+
+        Optional<Project> optionalProject = projectService.getById(projectId);
+
+        Project project = null;
+        if(optionalProject.isPresent()){
+            project = optionalProject.get();
+        }
+        else{
+            throw new ProjectNotFoundException();
+        }
+
+        if(project.getUser().getUserId()!=userId){
+            throw new InvalidProjectException();
+        }
 
         String upfile = fileSystemStorage.saveFile(file, userId ,projectId);
 
@@ -91,6 +124,32 @@ public class ProjectController {
                 .build();
 
         return new ResponseEntity<Response>(response,HttpStatus.OK);
+
+    }
+
+    @GetMapping("{userId}/projects")
+    public ResponseEntity<AllProjects> getAllProjects(@PathVariable Long userId) throws UserNotFoundException {
+
+
+        Optional<User> optionalUser = userService.findById(userId);
+
+        User user = null;
+        if(optionalUser.isPresent()){
+            user = optionalUser.get();
+        }
+        else{
+            throw new UserNotFoundException();
+        }
+
+        List<ProjectWithoutUser> list = projectService.getAllProjects(user);
+
+        AllProjects allProjects = AllProjects.builder()
+                .msg("OK")
+                .status("200")
+                .projects(list)
+                .build();
+
+        return new ResponseEntity<>(allProjects, HttpStatus.OK);
 
     }
 
