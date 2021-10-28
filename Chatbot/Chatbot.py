@@ -5,6 +5,7 @@ import random
 from functools import lru_cache
 import tensorflow as tf
 import json 
+import os.path
 
 embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 d = dict()
@@ -19,6 +20,8 @@ def getFile(path):
             for k in keys:
                 d.pop(k)
 
+        if not os.path.isfile(path):
+            raise Exception(400, "Data file not found for given api.")
         f = open(path)
         data = json.load(f)
         d[path] = data
@@ -32,12 +35,23 @@ def getNumpyFile(path):
             keys = list(nd.keys())
             for k in keys:
                 nd.pop(k)
+
+        if not os.path.isfile(path):
+            raise Exception(400, "Data file not found for given api.")
+
         f = np.load(path)
         nd[path] = f
         return f
 
 def saveEmbeddingsNumpy(path, name):
-    data = getFile(path)
+    try:
+        data = getFile(path)
+    except Exception as err:
+        if(len(err.args)==2):
+            status, msg = err.args
+            raise Exception(status, msg)
+        else:
+            raise Exception(500, "Internal Server error")
 
     inp = []
     targ = []
@@ -48,14 +62,21 @@ def saveEmbeddingsNumpy(path, name):
     
     with tf.device('/CPU:0'):
         embeddings = np.array(embed(inp))
-        np.save("D:\Minor-Project\\resources\\" + name + ".npy", embeddings)
+        np.save("D:\\Minor-Project\\resources\\" + name + ".npy", embeddings)
 
 
 def findAnswer(question, path, np_path):
     with tf.device('/CPU:0'):
         sent_embd = np.array(embed([question])[0])
-    embeddings = getNumpyFile(np_path)
-    data = getFile(path)
+    try:
+        embeddings = getNumpyFile(np_path)
+        data = getFile(path)
+    except Exception as err:
+        if(len(err.args)==2):
+            status, msg = err.args
+            raise Exception(status, msg)
+        else:
+            raise Exception(500, "Internal Server error")
 
     ind = -1
     ans = 0
@@ -82,20 +103,27 @@ def findAnswer(question, path, np_path):
         
 
 def getAnswer(question, project_name):
-    path = "D:\Minor-Project\\resources\\" + project_name + ".json"
-    np_path = "D:\Minor-Project\\resources\\" + project_name + ".npy"
-    answer = findAnswer(question, path, np_path)
+    path = "D:\\Minor-Project\\resources\\" + project_name + ".json"
+    np_path = "D:\\Minor-Project\\resources\\" + project_name + ".npy"
+    try:
+        answer = findAnswer(question, path, np_path)
+    except Exception as err:
+        if(len(err.args)==2):
+            status, msg = err.args
+            raise Exception(status, msg)
+        else:
+            raise Exception(500, "Internal Server error")
     return answer
 
 def findEmbedding(project_name):
     name = project_name
-    path = "D:\Minor-Project\\resources\\" + project_name + ".json"
-    saveEmbeddingsNumpy(path, name)
-
-# saveEmbeddingsNumpy('D:\Minor-Project\\resources\dialogs.txt', 'diaglogs_numpy')
-
-# while True:
-#     ques = input("Enter question: ")
-#     findAnswer(ques, 'D:\Minor-Project\\resources\dialogs.txt', 'D:\Minor-Project\\resources\diaglogs_numpy.npy')
-
-# findEmbedding("user-1-project-1")
+    path = "D:\\Minor-Project\\resources\\" + project_name + ".json"
+    try:
+        saveEmbeddingsNumpy(path, name)
+    except Exception as err:
+        if(len(err.args)==2):
+            status, msg = err.args
+            raise Exception(status, msg)
+        else:
+            raise Exception(500, "Internal Server error")
+    

@@ -3,7 +3,7 @@ import Redirect
 import py_eureka_client.eureka_client as eureka_client
 
 rest_port = 8998
-eureka_client.init(eureka_server="http://localhost:8761/eureka",
+eureka_client.init(eureka_server="http://localhost:8761/",
                    app_name="redirect-service",
                    instance_port=rest_port)
 

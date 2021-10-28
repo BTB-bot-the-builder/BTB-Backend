@@ -14,7 +14,14 @@ def getAnswers():
     question=request.args.get('question')
     project = request.args.get('project')
     user = request.args.get('user')
-    answer = Chatbot.getAnswer(question, "user-"+user+"-project-"+project)
+    try:
+        answer = Chatbot.getAnswer(question, "user-"+user+"-project-"+project)
+    except Exception as err:
+        status, msg = err.args
+        return {
+            "status": str(status),
+            "msg": msg
+        }, status
     return {
         "status": 200,
         "msg": "OK",
@@ -26,8 +33,14 @@ def getAnswers():
 def findEmbeddings():
     project = request.args.get('project')
     user = request.args.get('user')
-    print("here")
-    answer = Chatbot.findEmbedding("user-"+user+"-project-"+project)
+    try:
+        Chatbot.findEmbedding("user-"+user+"-project-"+project)
+    except Exception as err:
+        status, msg = err.args
+        return {
+            "status": str(status),
+            "msg": msg
+        }, status
     return {
         "status": 200,
         "msg": "OK"

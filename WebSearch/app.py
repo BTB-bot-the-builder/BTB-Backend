@@ -2,12 +2,16 @@ from flask import Flask, request, jsonify
 import WebSearch
 import py_eureka_client.eureka_client as eureka_client
 
+# from flask_eureka import Eureka
+
 rest_port = 8083
-eureka_client.init(eureka_server="http://localhost:8761/eureka",
+eureka_client.init(eureka_server="http://localhost:8761/",
                    app_name="web-search",
                    instance_port=rest_port)
 
 app = Flask(__name__)
+
+
 
 
 @app.route('/websearch')
