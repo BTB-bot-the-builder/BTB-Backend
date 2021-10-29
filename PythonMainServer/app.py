@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_restful import Api
-from resources.Chatbot import Info, Chatbot
+from resources.Chatbot import Info, Chatbot, Deploy
 import py_eureka_client.eureka_client as eureka_client
 from models.Project import Project
-import requests
+
 
 rest_port = 8990
 app = Flask(__name__)
@@ -19,6 +19,7 @@ api = Api(app)
 
 api.add_resource(Info, '/api/chatbot/<int:project_id>/info')
 api.add_resource(Chatbot, '/api/chatbot/<int:project_id>/chat')
+api.add_resource(Deploy, '/chatbot/embeddings')
 
 
 if __name__ == "__main__":
