@@ -141,7 +141,18 @@ class Deploy(Resource):
 		user_id = data['user']
 		project_id = data['project']
 
+		project = Project.findById(project_id)
+
+		if project is None:
+			return {
+					'status':"404",
+					'msg':'Chatbot not found'
+			}, 404
+
+		project.setSecretKey()
+
 		try:
+
 			ChatbotModel.findEmbedding( "user-"+str(user_id)+"-project-"+str(project_id))
 		except Exception as err:
 			status, msg = err.args

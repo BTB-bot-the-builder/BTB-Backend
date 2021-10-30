@@ -40,7 +40,7 @@ public class ProjectWithoutUser {
         this.botName = project.getBotName();
         this.description = project.getDescription();
         this.avatarUrl = project.getAvatarUrl();
-        this.api = project.getApi();
+        this.api = "http://localhost:8999/api/chatbot/"+project.getProjectId()+"/chat?api_key={api_key}";
         this.state = project.getState();
         this.date = project.getDate();
         for(Action action: project.getActions()){

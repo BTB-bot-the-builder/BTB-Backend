@@ -18,8 +18,6 @@ public interface ProjectService {
 
     public Optional<Project> getById(Long id) ;
 
-    public void addDataFile(Project p, String fileName) ;
-
     public void configureProject(Project project, String botName, String description, String avatarUrl) ;
 
     public List<ProjectWithoutUser> getAllProjects(User user) ;

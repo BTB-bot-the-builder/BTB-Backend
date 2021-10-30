@@ -1,5 +1,6 @@
 from db import db 
 from models.Action import Action
+from utils.SecretKeyGenerator import Generator
 
 class Project(db.Model):
 	project_id = db.Column(db.BigInteger, primary_key = True)
@@ -23,7 +24,14 @@ class Project(db.Model):
 		return Project.query.get(project_id)
 
 	def incrementRequests(self):
-		self.total_requests += 1
+		if self.total_requests is None:
+			self.total_requests = 1
+		else:
+			self.total_requests += 1
+		db.session.commit()
+
+	def setSecretKey(self):
+		self.api_key = Generator.generate()
 		db.session.commit()
 
 

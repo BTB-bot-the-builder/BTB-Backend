@@ -35,13 +35,7 @@ public class Project {
 
     private String avatarUrl;
 
-    private String api;
-
     private String apiKey;
-
-    private String modelPath;
-
-    private String dataFilePath;
 
     private Integer state;
 

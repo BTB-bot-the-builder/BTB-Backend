@@ -70,8 +70,6 @@ class ProjectRepositoryTest {
 
         System.out.println(p.getProjectId());
 
-        p.setDataFilePath("C://pathofdata");
-        p.setModelPath("C://pathofmodel");
         p.setState(2);
         System.out.println(p.getBotName());
         repository.save(p);
@@ -89,7 +87,6 @@ class ProjectRepositoryTest {
 
         System.out.println(p.getProjectId());
 
-        p.setApi("api");
         p.setApiKey("api_key");
         p.setState(3);
         System.out.println(p.getBotName());

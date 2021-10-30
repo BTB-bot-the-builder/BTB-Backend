@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +54,7 @@ public class ProjectController {
         Project project = Project.builder()
                 .projectName(request.getProjectName())
                 .user(u)
+                .date(new SimpleDateFormat("dd-MM-yyyy").format(new Date()))
                 .state(1)
                 .build();
 
@@ -112,8 +115,6 @@ public class ProjectController {
         }
 
         String upfile = fileSystemStorage.saveFile(file, userId ,projectId);
-
-        projectService.addDataFile(project, upfile);
 
         Response response = Response.builder()
                 .status("200")

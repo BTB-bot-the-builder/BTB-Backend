@@ -33,17 +33,6 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public void addDataFile(Project p, String filePath){
-
-
-        p.setDataFilePath(filePath);
-        p.setState(Math.max(3, p.getState()));
-
-        projectRepository.save(p);
-
-    }
-
-    @Override
     public void configureProject(Project p, String botName, String description, String avatarUrl) {
 
 
