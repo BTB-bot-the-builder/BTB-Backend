@@ -21,7 +21,13 @@ class Info(Resource):
 	def get(self, project_id):
 		data = self.parser.parse_args()
 		api_key = data['api_key']
-		project = Project.findById(project_id)
+		try:
+			project = Project.findById(project_id)
+		except Exception as e:
+			return {
+				'status':"500",
+				"msg":"Internal Server Error"
+			}, 500
 
 		print(type(project.project_id))
 
@@ -58,7 +64,7 @@ class Chatbot(Resource):
 	parser.add_argument('question',
 			type = str,
 			required = True,
-			help = "Question missing"
+			help = "Question is required"
 		)
 
 	def get(self, project_id):
@@ -77,6 +83,8 @@ class Chatbot(Resource):
 		user_id = project.user_id
 		project_id = project.project_id
 
+		project.incrementRequests()
+
 		# chatbot
 		try:
 			answer = ChatbotModel.getAnswer(question, "user-"+str(user_id)+"-project-"+str(project_id))
@@ -86,6 +94,7 @@ class Chatbot(Resource):
 				"status": str(status),
 				"msg": msg
 			}, status
+
 		return {
 	        "status": 200,
 	        "msg": "OK",

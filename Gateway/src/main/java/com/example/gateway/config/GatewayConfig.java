@@ -18,8 +18,8 @@ public class GatewayConfig {
         return builder.routes()
                 .route("login", r->r.path("/login").filters(f->f.filter(filter)).uri("lb://authentication"))
                 .route("user", r->r.path("/user/**").filters(f->f.filter(filter)).uri("lb://user-project"))
-                .route("redirect-service", r->r.path("/redirect").filters(f->f.filter(filter)).uri("http://localhost:8998"))
-                .route("web-search", r->r.path("/websearch").filters(f->f.filter(filter)).uri("http://localhost:8083")).build();
+                .route("python-main-server", r->r.path("/api/**").filters(f->f.filter(filter)).uri("http://localhost:8990"))
+                .route("python-main-server-deploy", r->r.path("/chatbot/**").filters(f->f.filter(filter)).uri("http://localhost:8990")).build();
 
 
 //

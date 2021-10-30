@@ -22,4 +22,8 @@ class Project(db.Model):
 	def findById(cls, project_id):
 		return Project.query.get(project_id)
 
+	def incrementRequests(self):
+		self.total_requests += 1
+		db.session.commit()
+
 

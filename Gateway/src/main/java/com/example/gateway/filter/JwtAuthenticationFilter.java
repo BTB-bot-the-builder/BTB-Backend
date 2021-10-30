@@ -60,7 +60,7 @@ public class JwtAuthenticationFilter implements GatewayFilter {
 
         System.out.println(url);
 
-        if(url.startsWith("/login")){
+        if(url.startsWith("/login") || url.startsWith("/api")){
             return false;
         }
         return true;

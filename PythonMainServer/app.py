@@ -19,7 +19,7 @@ api = Api(app)
 
 api.add_resource(Info, '/api/chatbot/<int:project_id>/info')
 api.add_resource(Chatbot, '/api/chatbot/<int:project_id>/chat')
-api.add_resource(Deploy, '/chatbot/embeddings')
+api.add_resource(Deploy, '/chatbot/deploy')
 
 
 if __name__ == "__main__":
