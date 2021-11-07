@@ -9,12 +9,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(value = InvalidAccessTokenException.class)
+    public ResponseEntity<ExceptionResponse> invalidAccessToken(InvalidAccessTokenException e){
+
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
+                .status(400)
+                .msg("Invalid access token")
+                .build();
+
+        return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler
     public ResponseEntity<ExceptionResponse> handleExceptions(Exception e){
 
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .status(500)
-                .msg(e.getMessage())
+                .msg("Internal Server Error")
                 .build();
 
         return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);

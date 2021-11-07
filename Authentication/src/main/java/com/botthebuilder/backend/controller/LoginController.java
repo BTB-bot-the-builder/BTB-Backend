@@ -1,6 +1,7 @@
 package com.botthebuilder.backend.controller;
 
 import com.botthebuilder.backend.entity.User;
+import com.botthebuilder.backend.exceptionhandling.InvalidAccessTokenException;
 import com.botthebuilder.backend.request.LoginRequest;
 import com.botthebuilder.backend.response.LoginResponse;
 import com.botthebuilder.backend.service.MyUserDetailsService;
@@ -36,14 +37,20 @@ public class LoginController {
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) throws Exception {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) throws InvalidAccessTokenException {
 
 
         String email = request.getEmail();
 
-        if(!TokenValidation.validate(request.getAccess_token())){
-            throw new Exception("Invalid access token");
+        try{
+            if(!TokenValidation.validate(request.getAccess_token())){
+                throw new InvalidAccessTokenException();
+            }
         }
+        catch(Exception e){
+            throw new InvalidAccessTokenException();
+        }
+
 
         User user = userService.getUserFromEmail(email);
         if(user==null){
