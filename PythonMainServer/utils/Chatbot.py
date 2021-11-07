@@ -6,8 +6,9 @@ from functools import lru_cache
 import tensorflow as tf
 import json 
 import os.path
+from config import GOOGLE_EMBEDDINGS_TF_HUB_URL, FILE_FOLDER_PATH
 
-embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+embed = hub.load(GOOGLE_EMBEDDINGS_TF_HUB_URL)
 d = dict()
 nd = dict()
 
@@ -62,7 +63,7 @@ def saveEmbeddingsNumpy(path, name):
     
     with tf.device('/CPU:0'):
         embeddings = np.array(embed(inp))
-        np.save("D:\\Minor-Project\\resources\\" + name + ".npy", embeddings)
+        np.save(FILE_FOLDER_PATH + name + ".npy", embeddings)
 
 
 def findAnswer(question, path, np_path):
@@ -103,8 +104,8 @@ def findAnswer(question, path, np_path):
         
 
 def getAnswer(question, project_name):
-    path = "D:\\Minor-Project\\resources\\" + project_name + ".json"
-    np_path = "D:\\Minor-Project\\resources\\" + project_name + ".npy"
+    path = FILE_FOLDER_PATH + project_name + ".json"
+    np_path = FILE_FOLDER_PATH + project_name + ".npy"
     try:
         answer = findAnswer(question, path, np_path)
     except Exception as err:
@@ -117,7 +118,7 @@ def getAnswer(question, project_name):
 
 def findEmbedding(project_name):
     name = project_name
-    path = "D:\\Minor-Project\\resources\\" + project_name + ".json"
+    path = FILE_FOLDER_PATH + project_name + ".json"
     try:
         saveEmbeddingsNumpy(path, name)
     except Exception as err:

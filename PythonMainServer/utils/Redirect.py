@@ -12,9 +12,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-
-MODEL_PATH = "D:\\Minor-Project\\resources\\redirect-model-h5.h5"
-TOKENIZER_PATH = "D:\\Minor-Project\\resources\\redirect-tokenizer-json.json"
+from config import MODEL_PATH, TOKENIZER_PATH
 
 def load_tokenizer(path):
 	with open(path, "r") as f:

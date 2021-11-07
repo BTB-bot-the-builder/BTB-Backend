@@ -2,8 +2,6 @@ import random
 
 class Generator:
 
-	
-
 	@classmethod
 	def generate(cls):
 
