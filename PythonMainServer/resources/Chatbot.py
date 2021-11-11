@@ -15,7 +15,7 @@ class Info(Resource):
 	parser.add_argument('api_key',
 			type = str,
 			required = True,
-			help = "API Key is required"
+			help = "API key is required"
 		)
 
 	def get(self, project_id):
@@ -58,7 +58,7 @@ class Chatbot(Resource):
 	parser.add_argument('api_key',
 			type = str,
 			required = True,
-			help = "API Key is required"
+			help = "API key is required"
 		)
 
 	parser.add_argument('question',
@@ -87,7 +87,7 @@ class Chatbot(Resource):
 
 		# chatbot
 		try:
-			answer = ChatbotModel.getAnswer(question, "user-"+str(user_id)+"-project-"+str(project_id))
+			answer, valid = ChatbotModel.getAnswer(question, "user-"+str(user_id)+"-project-"+str(project_id))
 		except Exception as err:
 			status, msg = err.args
 			return {
@@ -95,53 +95,47 @@ class Chatbot(Resource):
 				"msg": msg
 			}, status
 
-		return {
-	        "status": 200,
-	        "msg": "OK",
-	        "answer": answer
-		}, 200
+		if valid == -1:
+			res = WebSearch.find_results(question)
+			return {
+				"intent":"web",
+				'status':"200",
+				"msg":"OK",
+				"data":res
+			}, 200
+		else:
+			return {
+				"intent":"QA",
+		        "status": 200,
+		        "msg": "OK",
+		        "answer": answer
+			}, 200
+
+		
 
 		# redirect service
 		# page_name = Redirect.get_page_name(question)
 
 		# return {
+		# 	"intent":"redirect",
 		# 	'status': 200,
 		# 	'msg': 'OK',
 		# 	'webpage': page_name
 		# }, 200
 
-		#web search service
-		# res = WebSearch.find_results(question)
-
-		# return {
-		# 	'status':"200",
-		# 	"msg":"OK",
-		# 	"data":res
-		# }, 200
 
 class Deploy(Resource):
 
-	parser = reqparse.RequestParser()
 
-	parser.add_argument('user',
-			type = int,
-			required = True,
-			help = "user_id is required"
-		)
+	def post(self, project_id):
 
-	parser.add_argument('project',
-			type = int,
-			required = True,
-			help = "project_id is required"
-		)
-
-	def post(self):
-
-		data = self.parser.parse_args()
-		user_id = data['user']
-		project_id = data['project']
-
+		# try:
 		project = Project.findById(project_id)
+		# except:
+		# 	return {
+		# 		"status":"500",
+		# 		"msg":"Internal Server Error."
+		# 	}, 500
 
 		if project is None:
 			return {
@@ -149,10 +143,11 @@ class Deploy(Resource):
 					'msg':'Chatbot not found'
 			}, 404
 
+		user_id = project.user_id
+
 		project.setSecretKey()
 
 		try:
-
 			ChatbotModel.findEmbedding( "user-"+str(user_id)+"-project-"+str(project_id))
 		except Exception as err:
 			status, msg = err.args

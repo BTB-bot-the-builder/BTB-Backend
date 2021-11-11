@@ -13,6 +13,7 @@ public class GatewayConfig {
     @Autowired
     JwtAuthenticationFilter filter;
 
+
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder){
         return builder.routes()

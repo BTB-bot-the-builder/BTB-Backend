@@ -8,7 +8,9 @@ import json
 import os.path
 from config import GOOGLE_EMBEDDINGS_TF_HUB_URL, FILE_FOLDER_PATH
 
-embed = hub.load(GOOGLE_EMBEDDINGS_TF_HUB_URL)
+with tf.device('/CPU:0'):
+    embed = hub.load(GOOGLE_EMBEDDINGS_TF_HUB_URL)
+
 d = dict()
 nd = dict()
 
@@ -98,23 +100,23 @@ def findAnswer(question, path, np_path):
             ans = similarity
 
     if(ind!=-1):
-        return targ[ind]
+        return targ[ind], ind
     else:
-        return "Sorry I didn't get that."
+        return "Sorry I didn't get that.", ind
         
 
 def getAnswer(question, project_name):
     path = FILE_FOLDER_PATH + project_name + ".json"
     np_path = FILE_FOLDER_PATH + project_name + ".npy"
     try:
-        answer = findAnswer(question, path, np_path)
+        answer, valid = findAnswer(question, path, np_path)
     except Exception as err:
         if(len(err.args)==2):
             status, msg = err.args
             raise Exception(status, msg)
         else:
             raise Exception(500, "Internal Server error")
-    return answer
+    return answer, valid
 
 def findEmbedding(project_name):
     name = project_name

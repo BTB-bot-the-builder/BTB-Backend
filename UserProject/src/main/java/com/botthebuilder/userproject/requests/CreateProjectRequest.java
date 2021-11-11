@@ -19,8 +19,5 @@ public class CreateProjectRequest {
     @NotNull(message = "projectName is required")
     private String projectName;
 
-    @JsonProperty(required = true)
-    @NotNull(message = "userId is required")
-    private Long userId;
 
 }
