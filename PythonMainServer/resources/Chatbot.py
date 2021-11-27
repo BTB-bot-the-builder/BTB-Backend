@@ -4,8 +4,10 @@ from models.Project import Project
 import utils.WebSearch as WebSearch
 import utils.Redirect as Redirect
 import utils.Chatbot as ChatbotModel
+import utils.IntentIdentifier as IntentIdentifier
 import py_eureka_client.eureka_client as eureka_client
 import requests
+
 
 
 class Info(Resource):
@@ -85,43 +87,100 @@ class Chatbot(Resource):
 
 		project.incrementRequests()
 
-		# chatbot
-		try:
-			answer, valid = ChatbotModel.getAnswer(question, "user-"+str(user_id)+"-project-"+str(project_id))
-		except Exception as err:
-			status, msg = err.args
+		intent_type = IntentIdentifier.find(question, [a.action_name for a in project.actions])
+
+		if intent_type == 0:
+			answer = ChatbotModel.default_dataset_answers(question)
+			if answer != "":
+				return {
+					"status": "200",
+					"msg": "OK",
+					"intent":"QA",
+					"answer":answer
+				}, 200
+
+
+			try:
+				answer, valid = ChatbotModel.getAnswer(question, "user-"+str(user_id)+"-project-"+str(project_id))
+			except Exception as err:
+				status, msg = err.args
+				return {
+					"status": str(status),
+					"msg": msg
+				}, status
+
+			if valid == -1:
+				res = WebSearch.find_results(question)
+				return {
+					"intent":"web",
+					'status':"200",
+					"msg":"OK",
+					"data":res
+				}, 200
+			else:
+				return {
+					"intent":"QA",
+			        "status": 200,
+			        "msg": "OK",
+			        "answer": answer
+				}, 200
+				
+		elif intent_type == 1:
+
+			question = Redirect.beautify(question)
+			print(question)
+			page_name = Redirect.get_page_name(question)
+			
+			if page_name.lower() in [a.action_name.lower() for a in project.actions]:
+
+				link = [a.action_detail for a in project.actions if a.action_name.lower()==page_name.lower()][0]
+				return {
+					"intent":"redirect",
+					'status': 200,
+					'msg': 'OK',
+					'webpage': page_name,
+					'link':link
+				}, 200
+			else:
+				return {
+					"intent":"QA",
+			        "status": 200,
+			        "msg": "OK",
+			        "answer": "I didn't get that."
+				}, 200
+
+class Feedback(Resource):
+
+	parser = reqparse.RequestParser()
+
+	parser.add_argument(
+			'rating',
+			type = int,
+			required = True,
+			help = 'A rating is required'
+		)
+
+	def post(self, project_id):
+		data = self.parser.parse_args()
+		rating = data['rating']
+
+		project = Project.findById(project_id)
+
+		if project is None:
 			return {
-				"status": str(status),
-				"msg": msg
-			}, status
+					'status':"404",
+					'msg':'Chatbot not found'
+			}, 404
 
-		if valid == -1:
-			res = WebSearch.find_results(question)
-			return {
-				"intent":"web",
-				'status':"200",
-				"msg":"OK",
-				"data":res
-			}, 200
-		else:
-			return {
-				"intent":"QA",
-		        "status": 200,
-		        "msg": "OK",
-		        "answer": answer
-			}, 200
+		project.incrementRatings() 
 
-		
+		return {
+			'status':'200',
+			'msg':'Rating recorded'
+		}, 200
 
-		# redirect service
-		# page_name = Redirect.get_page_name(question)
 
-		# return {
-		# 	"intent":"redirect",
-		# 	'status': 200,
-		# 	'msg': 'OK',
-		# 	'webpage': page_name
-		# }, 200
+
 
 
 class Deploy(Resource):

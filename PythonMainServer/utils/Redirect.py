@@ -41,5 +41,23 @@ def get_page_name(test_sentence):
 		test_output = lstm.predict(test_padded)
 	return test_sentence.split(" ")[np.argmax(test_output)]
 
+def beautify(question):
+ 
+	# initializing punctuations string
+	punc = '''!()-[]{};:'"\\,<>./?@#$%^&*_~'''
+	 
+	# Removing punctuations in string
+	# Using loop + punctuation string
+	for ele in question:
+	    if ele in punc:
+	        question = question.replace(ele, "")
+
+	q = ""
+	l = question.split(' ')
+	for word in l:
+		if len(word)>0:
+			q = q+word+' '
+	return q[:-1]
+
 # sentence = input("enter the command: ")
 # print(get_page_name(sentence))

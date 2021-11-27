@@ -27,6 +27,18 @@ class Project(db.Model):
 			self.total_requests += 1
 		db.session.commit()
 
+	def incrementRatings(self, rating):
+		if self.total_ratings is None:
+			total_ratings = 1 
+		else:
+			total_ratings+=1
+
+		if self.sum_ratings is None:
+			sum_ratings=rating
+		else:
+			sum_ratings+=rating
+		db.session.commit()
+
 	def setSecretKey(self):
 		self.api_key = Generator.generate()
 		db.session.commit()

@@ -6,3 +6,5 @@ EUREKA_SERVER_URL = "http://localhost:8761/"
 REST_PORT = 8990
 GOOGLE_EMBEDDINGS_TF_HUB_URL = "https://tfhub.dev/google/universal-sentence-encoder/4"
 FILE_FOLDER_PATH = "D:\\Minor-Project\\resources\\"
+DEFAULT_DATASET_PATH = "D:\\Minor-Project\\chatterbot-corpus\\chatterbot_corpus\\data\\english\\dataset.json"
+DEFAULT_DATASET_NPY_PATH = "D:\\Minor-Project\\chatterbot-corpus\\chatterbot_corpus\\data\\english\\dataset.npy"

@@ -6,13 +6,42 @@ from functools import lru_cache
 import tensorflow as tf
 import json 
 import os.path
-from config import GOOGLE_EMBEDDINGS_TF_HUB_URL, FILE_FOLDER_PATH
+from config import GOOGLE_EMBEDDINGS_TF_HUB_URL, FILE_FOLDER_PATH, DEFAULT_DATASET_PATH, DEFAULT_DATASET_NPY_PATH
 
 with tf.device('/CPU:0'):
     embed = hub.load(GOOGLE_EMBEDDINGS_TF_HUB_URL)
 
 d = dict()
 nd = dict()
+
+dataset_file = open(DEFAULT_DATASET_PATH)
+dataset = json.load(dataset_file)['conversations']
+
+print(len(dataset))
+
+
+def default_dataset_answers(question):
+    A = embed([question])[0]
+    default_embeddings = np.load(DEFAULT_DATASET_NPY_PATH)
+    ind = -1
+    ans = 0
+    print(default_embeddings.shape[0])
+    for i in range(default_embeddings.shape[0]):
+        B = default_embeddings[i]
+        similarity = np.dot(A,B)/(np.linalg.norm(A)*np.linalg.norm(B))
+        if similarity>ans and similarity>0.60:
+            ind = i
+            ans = similarity
+
+    print(ind, dataset[ind][0])
+    if ind==-1:
+        return ""
+    else:
+        s = len(dataset[ind])
+        rand_ind = 1
+        return dataset[ind][rand_ind]
+
+
 
 def getFile(path):
     if path in d:

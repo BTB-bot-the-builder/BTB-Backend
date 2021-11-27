@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from resources.Chatbot import Info, Chatbot, Deploy
+from resources.Chatbot import Info, Chatbot, Deploy, Feedback
 import py_eureka_client.eureka_client as eureka_client
 from models.Project import Project
 from config import DB_URL, REST_PORT, EUREKA_SERVER_URL, APP_NAME
@@ -25,6 +25,7 @@ def handle_exception(e):
 api.add_resource(Info, '/api/chatbot/<int:project_id>/info')
 api.add_resource(Chatbot, '/api/chatbot/<int:project_id>/chat')
 api.add_resource(Deploy, '/chatbot/<int:project_id>')
+api.add_resource(Feedback, '/api/chatbot/<int:project_id>/feedback')
 
 
 if __name__ == "__main__":
