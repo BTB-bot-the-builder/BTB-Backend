@@ -111,6 +111,7 @@ class Chatbot(Resource):
 
 			if valid == -1:
 				res = WebSearch.find_results(question)
+				links = [res[0]['link'], res[1]['link'], res[2]['link']]
 				return {
 					"intent":"web",
 					'status':"200",
@@ -150,6 +151,7 @@ class Chatbot(Resource):
 			        "msg": "OK",
 			        "answer": "I didn't get that."
 				}, 200
+
 
 class Feedback(Resource):
 

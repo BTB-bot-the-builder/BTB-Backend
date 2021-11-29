@@ -32,6 +32,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     }
 
+
     @Override
     public void configureProject(Project p, String botName, String description, String avatarUrl) {
 
@@ -51,5 +52,11 @@ public class ProjectServiceImpl implements ProjectService{
             list.add(projectWithoutUser);
         }
         return list;
+    }
+
+    @Override
+    public void setStateDataFile(Project project) {
+        project.setState(Math.max(3, project.getState()));
+        projectRepository.save(project);
     }
 }

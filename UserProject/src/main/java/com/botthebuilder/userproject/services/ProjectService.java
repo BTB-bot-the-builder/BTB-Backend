@@ -22,4 +22,6 @@ public interface ProjectService {
 
     public List<ProjectWithoutUser> getAllProjects(User user) ;
 
+    public void setStateDataFile(Project project);
+
 }
