@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from resources.Chatbot import Info, Chatbot, Deploy, Feedback
 import py_eureka_client.eureka_client as eureka_client
 from models.Project import Project
@@ -14,13 +15,14 @@ eureka_client.init(eureka_server=EUREKA_SERVER_URL,
                    instance_port=REST_PORT)
 
 api = Api(app)
+CORS(app)
 
-@app.errorhandler(Exception)
-def handle_exception(e):
-    return {
-    	'status':500,
-    	'msg':'Internal Server Error'
-    }, 500
+# @app.errorhandler(Exception)
+# def handle_exception(e):
+#     return {
+#     	'status':500,
+#     	'msg':'Internal Server Error'
+#     }, 500
 
 api.add_resource(Info, '/api/chatbot/<int:project_id>/info')
 api.add_resource(Chatbot, '/api/chatbot/<int:project_id>/chat')

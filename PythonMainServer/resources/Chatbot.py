@@ -115,7 +115,9 @@ class Chatbot(Resource):
 					"intent":"web",
 					'status':"200",
 					"msg":"OK",
-					"data":res
+					"data":res,
+					"title": "Amitabh Bachchan - 79 years",
+					"link": "https://en.wikipedia.org/wiki/Amitabh_Bachchan"
 				}, 200
 			else:
 				return {
