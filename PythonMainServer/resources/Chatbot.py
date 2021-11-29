@@ -5,6 +5,7 @@ import utils.WebSearch as WebSearch
 import utils.Redirect as Redirect
 import utils.Chatbot as ChatbotModel
 import utils.IntentIdentifier as IntentIdentifier
+import utils.Bert as Bert
 import py_eureka_client.eureka_client as eureka_client
 import requests
 
@@ -111,14 +112,16 @@ class Chatbot(Resource):
 
 			if valid == -1:
 				res = WebSearch.find_results(question)
-				links = [res[0]['link'], res[1]['link'], res[2]['link']]
+				links = [res[0]['link']]
+				# answer, one, score = Bert.getAnswers(question, links)
+				
 				return {
-					"intent":"web",
-					'status':"200",
-					"msg":"OK",
-					"data":res,
-					"title": "Amitabh Bachchan - 79 years",
-					"link": "https://en.wikipedia.org/wiki/Amitabh_Bachchan"
+						"intent":"web",
+						'status':"200",
+						"msg":"OK",
+						"data":res[0]['text'],
+						"title": res[0]['title'],
+						"link": links[0]
 				}, 200
 			else:
 				return {

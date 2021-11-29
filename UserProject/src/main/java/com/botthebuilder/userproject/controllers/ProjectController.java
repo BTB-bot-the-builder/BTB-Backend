@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class ProjectController {
@@ -115,6 +116,8 @@ public class ProjectController {
         }
 
         String upfile = fileSystemStorage.saveFile(file, userId ,projectId);
+
+        projectService.setStateDataFile(project);
 
         Response response = Response.builder()
                 .status("200")

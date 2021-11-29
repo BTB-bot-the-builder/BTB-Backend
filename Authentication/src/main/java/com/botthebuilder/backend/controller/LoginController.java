@@ -15,12 +15,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.crypto.spec.PSource;
 
+@CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
 @RestController
 public class LoginController {
 
@@ -73,7 +75,7 @@ public class LoginController {
 
         LoginResponse loginResponse = LoginResponse.builder()
                 .msg("Logged in successfully")
-                .status(200)
+                .status("200")
                 .token(jwt)
                 .userId(user.getUserId())
                 .build();

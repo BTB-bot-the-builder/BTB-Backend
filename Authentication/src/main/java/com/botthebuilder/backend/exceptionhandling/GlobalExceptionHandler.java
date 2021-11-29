@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> invalidAccessToken(InvalidAccessTokenException e){
 
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
-                .status(400)
+                .status("400")
                 .msg("Invalid access token")
                 .build();
 
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleExceptions(Exception e){
 
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
-                .status(500)
+                .status("500")
                 .msg("Internal Server Error")
                 .build();
 

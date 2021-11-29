@@ -17,12 +17,12 @@ eureka_client.init(eureka_server=EUREKA_SERVER_URL,
 api = Api(app)
 CORS(app)
 
-@app.errorhandler(Exception)
-def handle_exception(e):
-    return {
-    	'status':500,
-    	'msg':'Internal Server Error'
-    }, 500
+# @app.errorhandler(Exception)
+# def handle_exception(e):
+#     return {
+#     	'status':500,
+#     	'msg':'Internal Server Error'
+#     }, 500
 
 api.add_resource(Info, '/api/chatbot/<int:project_id>/info')
 api.add_resource(Chatbot, '/api/chatbot/<int:project_id>/chat')
